@@ -1,4 +1,4 @@
-package com.example.livefrontproject
+package com.example.livefrontproject.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.livefrontproject.navigation.MainApp
+import com.example.livefrontproject.ui.compose.MainApp
 import com.example.livefrontproject.ui.theme.LivefrontProjectTheme
 import dagger.hilt.android.AndroidEntryPoint
 

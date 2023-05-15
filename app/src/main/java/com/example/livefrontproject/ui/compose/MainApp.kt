@@ -1,4 +1,4 @@
-package com.example.livefrontproject.navigation
+package com.example.livefrontproject.ui.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -10,10 +10,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.livefrontproject.model.ArticleItem
-import com.example.livefrontproject.navigation.Screens2.navToNewsDetail
 import com.example.livefrontproject.network.NetworkingSingleton
-import com.example.livefrontproject.ui.compose.NewsDetailComposable
-import com.example.livefrontproject.ui.compose.NewsListComposable
+import com.example.livefrontproject.ui.compose.Screens.navToNewsDetail
+import com.example.livefrontproject.ui.compose.screens.NewsDetailComposable
+import com.example.livefrontproject.ui.compose.screens.NewsListComposable
 import java.lang.IllegalArgumentException
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -26,7 +26,7 @@ fun MainApp(modifier: Modifier = Modifier) {
 
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Screens2.NEWS_LIST) {
+    NavHost(navController = navController, startDestination = Screens.NEWS_LIST) {
         newsListGraph(
             modifier = modifier,
             onNewsItemClick = { newsItem ->
@@ -38,7 +38,7 @@ fun MainApp(modifier: Modifier = Modifier) {
     }
 }
 
-private object Screens2 {
+private object Screens {
 
     /**
      * Route for [newsListGraph]
@@ -62,14 +62,14 @@ private fun NavGraphBuilder.newsListGraph(
     modifier: Modifier,
     onNewsItemClick: (ArticleItem) -> Unit
 ) {
-    composable(route = Screens2.NEWS_LIST) {
+    composable(route = Screens.NEWS_LIST) {
         NewsListComposable(modifier = modifier, onNewsItemClick = onNewsItemClick)
     }
 }
 
 private fun NavGraphBuilder.newsDetailGraph(modifier: Modifier) {
     composable(
-        route = Screens2.NEWS_DETAIL,
+        route = Screens.NEWS_DETAIL,
         arguments = listOf(navArgument("newsItem") { type = NavType.StringType })
     ) { backStackEntry ->
         val newsItem = backStackEntry.arguments?.getString("newsItem")?.toNewsItem()

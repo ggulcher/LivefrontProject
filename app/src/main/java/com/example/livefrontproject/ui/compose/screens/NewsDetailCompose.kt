@@ -1,4 +1,4 @@
-package com.example.livefrontproject.ui.compose
+package com.example.livefrontproject.ui.compose.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
