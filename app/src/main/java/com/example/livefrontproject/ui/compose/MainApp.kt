@@ -84,6 +84,10 @@ private fun String.toNewsItem(): ArticleItem =
 private fun ArticleItem.toJsonString(): String =
     NetworkingSingleton.AppJson.encodeToString(ArticleItem.serializer(), this)
 
+/**
+ * Passing full Article object due to limitation of API
+ * Unable to make GET request based on item ID or similar parameter
+ */
 fun ArticleItem.encodeUrl(): ArticleItem {
     val encodedUrl = URLEncoder.encode(this.urlToImage, StandardCharsets.UTF_8.toString())
     return this.copy(urlToImage = encodedUrl)

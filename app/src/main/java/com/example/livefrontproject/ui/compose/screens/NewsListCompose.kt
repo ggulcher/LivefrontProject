@@ -3,6 +3,7 @@ package com.example.livefrontproject.ui.compose.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,6 +23,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.livefrontproject.R
 import com.example.livefrontproject.model.ArticleItem
+import com.example.livefrontproject.ui.compose.components.ErrorDialog
+import com.example.livefrontproject.ui.compose.components.LoadingDialog
 import com.example.livefrontproject.ui.compose.components.NewsListItem
 import com.example.livefrontproject.ui.compose.components.SearchBar
 import com.example.livefrontproject.ui.viewmodel.NewsViewModel
@@ -41,29 +44,42 @@ fun NewsListComposable(
     val state = viewModel.state.collectAsState()
     val query = searchState.value.text
 
-    Scaffold(modifier = modifier) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            SearchBar(
-                hint = defaultSearchText,
-                modifier = Modifier,
-                state = searchState,
-                query = query,
-                viewModel = viewModel
-            )
-            LazyColumn(
-                state = lazyListState,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                items(items = state.value.articles) {
-                    NewsListItem(
-                        newsItem = it,
-                        onNewsItemClick = onNewsItemClick
+    Scaffold(
+        modifier = modifier,
+        content = {
+            if (state.value.status == NewsViewModel.UiStatus.Error) {
+                ErrorDialog(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClickRetry = { viewModel.onRetryClick() }
+                )
+            } else {
+                Column(
+                    modifier = Modifier.padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    if (state.value.status == NewsViewModel.UiStatus.Loading) {
+                        LoadingDialog()
+                    }
+                    SearchBar(
+                        hint = defaultSearchText,
+                        modifier = Modifier,
+                        state = searchState,
+                        query = query,
+                        onSearchClick = { viewModel.getSearchedItems(query) }
                     )
+                    LazyColumn(
+                        state = lazyListState,
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        items(items = state.value.articles) {
+                            NewsListItem(
+                                newsItem = it,
+                                onNewsItemClick = onNewsItemClick
+                            )
+                        }
+                    }
                 }
             }
         }
-    }
+    )
 }

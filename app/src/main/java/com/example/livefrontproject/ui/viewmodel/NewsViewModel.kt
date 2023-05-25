@@ -35,17 +35,27 @@ class NewsViewModel @Inject constructor(
 
     private fun getNewsItems() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                try {
-                    val response = repository.getNewsItems()
-                    _state.update { currentState ->
-                        currentState.copy(newsItems = response)
-                    }
-                } catch (e: Exception) {
-                    throw NullPointerException()
+            try {
+                val response = repository.getNewsItems()
+                _state.update { currentState ->
+                    currentState.copy(newsItems = response, status = UiStatus.Data)
+                }
+            } catch (e: Exception) {
+                _state.update { currentState ->
+                    currentState.copy(status = UiStatus.Error)
                 }
             }
         }
+    }
+
+    /**
+     * To be invoked during a network error and a new request is needed
+     */
+    fun onRetryClick() {
+        _state.update { currentState ->
+            currentState.copy(status = UiStatus.Loading)
+        }
+        getNewsItems()
     }
 
     /**
@@ -53,12 +63,18 @@ class NewsViewModel @Inject constructor(
      */
     fun getSearchedItems(query: String) {
         viewModelScope.launch {
-            val searched = repository.searchNews(query)
-            _state.update { currentState ->
-                currentState.copy(
-                    searchQuery = query,
-                    searchItems = searched
-                )
+            try {
+                val searched = repository.searchNews(query)
+                _state.update { currentState ->
+                    currentState.copy(
+                        searchQuery = query,
+                        searchItems = searched
+                    )
+                }
+            } catch (e: Exception) {
+                _state.update { currentState ->
+                    currentState.copy(status = UiStatus.Error)
+                }
             }
         }
     }
@@ -67,6 +83,7 @@ class NewsViewModel @Inject constructor(
         val searchQuery: String,
         val newsItems: List<ArticleItem>,
         val searchItems: List<ArticleItem>,
+        val status: UiStatus
     ) {
 
         val articles: List<ArticleItem> = when {
@@ -79,7 +96,17 @@ class NewsViewModel @Inject constructor(
                 searchQuery = "",
                 newsItems = emptyList(),
                 searchItems = emptyList(),
+                status = UiStatus.Loading
             )
         }
+    }
+
+    /**
+     * Represents the current status of the UI within [NewsState]
+     */
+    enum class UiStatus {
+        Loading,
+        Data,
+        Error
     }
 }

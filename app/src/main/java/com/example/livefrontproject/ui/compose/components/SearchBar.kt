@@ -40,7 +40,7 @@ fun SearchBar(
     query: String,
     modifier: Modifier = Modifier,
     state: MutableState<TextFieldValue>,
-    viewModel: NewsViewModel
+    onSearchClick: (String) -> Unit
 ) {
 
     var isHintDisplayed by remember {
@@ -89,9 +89,7 @@ fun SearchBar(
         Button(
             modifier = Modifier.weight(.2f),
             onClick = {
-                if (query.isNotEmpty()) {
-                    viewModel.getSearchedItems(query)
-                }
+                if (query.isNotEmpty()) { onSearchClick.invoke(query) }
             }
         ) {
             Icon(

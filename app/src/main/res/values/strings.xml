@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">LivefrontProject</string>
     <string name="default_search_text">...</string>
+    <string name="loading_dialog">Loading...</string>
 </resources>
